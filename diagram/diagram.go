@@ -12,8 +12,12 @@ type Element struct {
 	size int
 }
 
+type Point struct {
+	x, y int
+}
+
 type Connector struct {
-	
+	b1, b2 int
 }
 
 type Transition struct {
@@ -45,6 +49,12 @@ func DefaultDiagram() Diagram {
 func AddBlock(d Diagram, x int, y int) Diagram {
 
 	d.elements = append(d.elements, Element{x,y,"block","",0})
+	return d
+}
+
+func AddConnector(d Diagram, b1 int, b2 int) Diagram {
+
+	d.connectors = append(d.connectors, Connector{b1,b2})
 	return d
 }
 
@@ -89,6 +99,14 @@ func slope(d Diagram, i1 int, i2 int) int {
 	return d.elements[i2].x - d.elements[i1].x / d.elements[i2].y - d.elements[i1].y
 }
 
+func calcP1(d Diagram, c Connector) Point {
+	return Point{0,0}
+}
+
+func calcP2(d Diagram, c Connector) Point {
+	return Point{0,0}
+}
+
 func Diagram2Svg(diagram Diagram) string {
 
 	elements := ""
@@ -115,6 +133,17 @@ func Diagram2Svg(diagram Diagram) string {
 		i++
 	}
 
+	connectors := ""
+	i = 1
+	for _, c := range diagram.connectors {
+		_ = calcP1(diagram, c)
+		_ = calcP2(diagram, c)
+		connectors += fmt.Sprintf(
+			"<line class=\"transition%d\" x1=\"106\" y1=\"189.44808467741936\" x2=\"212.51573895657816\" y2=\"165.39614362270817\" stroke=\"black\" stroke-width=\"4\" marker-end=\"url(#arrowhead)\"></line>",
+			i)
+		i++
+	}
+
 	width := diagram.width
 	height := diagram.height
 
@@ -129,6 +158,12 @@ func Diagram2Svg(diagram Diagram) string {
 		"<svg width=\"%d\" height=\"%d\" align=\"center\">" +
         " <rect x=\"0\" y=\"0\" id=\"editor-canvas\" width=\"%d\" height=\"%d\" stroke=\"white\" fill=\"transparent\" stroke-width=\"0\"></rect>"+
 		"%s\n"+
+		"<defs>\n"+
+        "<marker id=\"arrowhead\" markerWidth=\"5\" markerHeight=\"3.5\" refX=\"0\" refY=\"1.75\" orient=\"auto\">\n"+
+        "    <polygon points=\"0 0, 5 1.75 0 3.5\"></polygon>\n"+
+        "</marker>\n"+
+    	"</defs>\n"+
+		"%s\n"+
 		"<style>\n"+
 		"%s\n"+
 		"@keyframes transitionOpacity {\n"+
@@ -138,7 +173,7 @@ func Diagram2Svg(diagram Diagram) string {
         "}\n"+
 	    "</style>\n"+
 		"</svg>\n",
-		width, height, width, height, elements, transitions)
+		width, height, width, height, elements, connectors, transitions)
 
 		return s
 }

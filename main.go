@@ -42,6 +42,9 @@ func main() {
 	mainDiagram = diagram.AddTransition(mainDiagram, 28)
 	mainDiagram = diagram.AddTransition(mainDiagram, 32)
 
+	mainDiagram = diagram.AddConnector(mainDiagram, 0, 1)
+	mainDiagram = diagram.AddConnector(mainDiagram, 1, 2)
+
 	log.Print("Server started on localhost:8080")
 	log.Fatal(http.ListenAndServe(":8080", r))
 }
