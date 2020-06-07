@@ -1,5 +1,6 @@
 # diagram-animator
-Under development
+Add animiation to more effectively communicate your message. Still under development.
+
 
 ### build & run
 go build
