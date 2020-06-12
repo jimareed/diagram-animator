@@ -7,9 +7,9 @@ import (
 	"github.com/jimareed/diagram-animator/diagram"
 )
 
-func getAnimationHandler(w http.ResponseWriter, r *http.Request) {
+func getInstructionsHandler(w http.ResponseWriter, r *http.Request) {
 
-	d := getMainDiagram()
+	d := getInstructionsDiagram()
 
 	io.WriteString(w, "<html><body>" + diagram.Diagram2Svg(d) + "</body></html>\n")
 	
